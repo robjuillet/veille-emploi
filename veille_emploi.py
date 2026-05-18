@@ -6,78 +6,65 @@ import requests
 from datetime import date
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from bs4 import BeautifulSoup
 
 # ── Configuration ────────────────────────────────────────────────
 RECIPIENT_EMAIL = "robjuillet@gmail.com"
-SENDER_EMAIL    = os.environ["SENDER_EMAIL"]   # ton Gmail expéditeur
-SENDER_PASSWORD = os.environ["SENDER_PASSWORD"] # mot de passe d'application Gmail
+SENDER_EMAIL    = os.environ["SENDER_EMAIL"]
+SENDER_PASSWORD = os.environ["SENDER_PASSWORD"]
 CACHE_FILE      = "jobs_cache.json"
-
-KEYWORDS = [
-    "stratégie", "strategie", "strategy",
-    "développement", "developpement", "development",
-    "business development", "bizdev",
-    "produit", "product",
-    "contenu", "contenus", "content", "editorial", "éditorial",
-    "partenariats", "partnership",
-    "audience", "plateforme", "platform",
-    "médias", "medias", "media",
-    "streaming", "numérique", "digital",
-]
 
 COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
-    {"name": "Cafeyn",          "url": "https://www.welcometothejungle.com/fr/companies/cafeyn/jobs"},
-    {"name": "Deezer",          "url": "https://www.deezer.com/fr/company/jobs"},
-    {"name": "Dailymotion",     "url": "https://www.dailymotion.com/fr/careers"},
-    {"name": "Molotov",         "url": "https://www.welcometothejungle.com/fr/companies/molotov/jobs"},
-    {"name": "Acast",           "url": "https://www.acast.com/en/jobs"},
-    {"name": "Spotify",         "url": "https://www.lifeatspotify.com/jobs"},
-    {"name": "Netflix",         "url": "https://jobs.netflix.com/search?location=Paris%2C%20France"},
-    {"name": "Disney+",         "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
-    {"name": "Paramount+",      "url": "https://careers.paramount.com/search-jobs/Paris"},
+    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://www.welcometothejungle.com/fr/companies/cafeyn/jobs"},
+    {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezer.com/fr/company/jobs"},
+    {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://www.dailymotion.com/fr/careers"},
+    {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://www.welcometothejungle.com/fr/companies/molotov/jobs"},
+    {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://www.acast.com/en/jobs"},
+    {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs"},
+    {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://jobs.netflix.com/search?location=Paris%2C%20France"},
+    {"name": "Disney+",              "cat": "Streaming & plateformes", "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
+    {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search-jobs/Paris"},
     # ── Médias & presse ──────────────────────────────────────────
-    {"name": "TF1 Group",       "url": "https://careers.tf1pub.fr"},
-    {"name": "M6 Group",        "url": "https://www.groupem6.fr/rejoignez-nous.html"},
-    {"name": "France Télévisions","url": "https://www.francetelevisions.fr/groupe/nous-rejoindre"},
-    {"name": "Canal+",          "url": "https://www.canalplus.com/nous-rejoindre/"},
-    {"name": "Radio France",    "url": "https://www.radiofrance.fr/nous-rejoindre"},
-    {"name": "arte",            "url": "https://www.arte.tv/fr/corporate/emplois/"},
-    {"name": "Telerama",        "url": "https://recrutement.lemonde.fr"},
-    {"name": "Les Inrockuptibles","url": "https://www.welcometothejungle.com/fr/companies/les-inrockuptibles/jobs"},
-    {"name": "Society / SoPress","url": "https://www.welcometothejungle.com/fr/companies/society/jobs"},
-    {"name": "Brut",            "url": "https://www.welcometothejungle.com/fr/companies/brut/jobs"},
-    {"name": "Konbini",         "url": "https://www.welcometothejungle.com/fr/companies/konbini/jobs"},
-    {"name": "Loopsider",       "url": "https://www.welcometothejungle.com/fr/companies/loopsider/jobs"},
-    {"name": "Usbek & Rica",    "url": "https://usbeketrica.com/fr/jobs"},
-    {"name": "Prisma Media",    "url": "https://www.prismamedia.com/fr/carrieres"},
-    {"name": "Reworld Media",   "url": "https://www.reworldmedia.com/fr/recrutement"},
+    {"name": "TF1 Group",            "cat": "Médias & presse",         "url": "https://careers.tf1pub.fr"},
+    {"name": "M6 Group",             "cat": "Médias & presse",         "url": "https://www.groupem6.fr/rejoignez-nous.html"},
+    {"name": "France Télévisions",   "cat": "Médias & presse",         "url": "https://www.francetelevisions.fr/groupe/nous-rejoindre"},
+    {"name": "Canal+",               "cat": "Médias & presse",         "url": "https://www.canalplus.com/nous-rejoindre/"},
+    {"name": "Radio France",         "cat": "Médias & presse",         "url": "https://www.radiofrance.fr/nous-rejoindre"},
+    {"name": "arte",                 "cat": "Médias & presse",         "url": "https://www.arte.tv/fr/corporate/emplois/"},
+    {"name": "Telerama",             "cat": "Médias & presse",         "url": "https://recrutement.lemonde.fr"},
+    {"name": "Les Inrockuptibles",   "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/les-inrockuptibles/jobs"},
+    {"name": "Society / SoPress",    "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/society/jobs"},
+    {"name": "Brut",                 "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/brut/jobs"},
+    {"name": "Konbini",              "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/konbini/jobs"},
+    {"name": "Loopsider",            "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/loopsider/jobs"},
+    {"name": "Usbek & Rica",         "cat": "Médias & presse",         "url": "https://usbeketrica.com/fr/jobs"},
+    {"name": "Prisma Media",         "cat": "Médias & presse",         "url": "https://www.prismamedia.com/fr/carrieres"},
+    {"name": "Reworld Media",        "cat": "Médias & presse",         "url": "https://www.reworldmedia.com/fr/recrutement"},
     # ── Cinéma & production ──────────────────────────────────────
-    {"name": "Mediawan",        "url": "https://www.mediawan.fr/nous-rejoindre"},
-    {"name": "Newen Studios",   "url": "https://www.newen.tv/jobs"},
-    {"name": "Gaumont",         "url": "https://www.gaumont.com/fr/offres-emploi/"},
-    {"name": "UGC",             "url": "https://www.ugc.fr/recrutement.html"},
-    {"name": "SND Films",       "url": "https://www.snd-films.com"},
-    {"name": "mk2",             "url": "https://www.mk2.com/fr/jobs"},
+    {"name": "Mediawan",             "cat": "Cinéma & production",     "url": "https://www.mediawan.fr/nous-rejoindre"},
+    {"name": "Newen Studios",        "cat": "Cinéma & production",     "url": "https://www.newen.tv/jobs"},
+    {"name": "Gaumont",              "cat": "Cinéma & production",     "url": "https://www.gaumont.com/fr/offres-emploi/"},
+    {"name": "UGC",                  "cat": "Cinéma & production",     "url": "https://www.ugc.fr/recrutement.html"},
+    {"name": "SND Films",            "cat": "Cinéma & production",     "url": "https://www.snd-films.com"},
+    {"name": "mk2",                  "cat": "Cinéma & production",     "url": "https://www.mk2.com/fr/jobs"},
     # ── Culture & institutions ───────────────────────────────────
-    {"name": "Gaîté Lyrique",   "url": "https://gaite-lyrique.net/la-gaite/recrutement"},
-    {"name": "La Villette",     "url": "https://lavillette.com/la-villette/recrutement"},
-    {"name": "Philharmonie de Paris","url": "https://philharmoniedeparis.fr/fr/la-philharmonie/recrutement"},
-    {"name": "Lafayette Anticipations","url": "https://www.lafayetteanticipations.com/fr/fondation"},
+    {"name": "Gaîté Lyrique",        "cat": "Culture & institutions",  "url": "https://gaite-lyrique.net/la-gaite/recrutement"},
+    {"name": "La Villette",          "cat": "Culture & institutions",  "url": "https://lavillette.com/la-villette/recrutement"},
+    {"name": "Philharmonie de Paris","cat": "Culture & institutions",  "url": "https://philharmoniedeparis.fr/fr/la-philharmonie/recrutement"},
+    {"name": "Lafayette Anticipations","cat": "Culture & institutions","url": "https://www.lafayetteanticipations.com/fr/fondation"},
     # ── Édition ──────────────────────────────────────────────────
-    {"name": "Flammarion",      "url": "https://www.flammarion.com/recrutement"},
-    {"name": "Actes Sud",       "url": "https://www.actes-sud.fr/recrutement"},
-    {"name": "Gallimard",       "url": "https://www.gallimard.fr/Gallimard/Groupe-Gallimard/Emplois-et-stages"},
-    {"name": "Combat",          "url": "https://www.welcometothejungle.com/fr/companies/combat/jobs"},
+    {"name": "Flammarion",           "cat": "Édition",                 "url": "https://www.flammarion.com/recrutement"},
+    {"name": "Actes Sud",            "cat": "Édition",                 "url": "https://www.actes-sud.fr/recrutement"},
+    {"name": "Gallimard",            "cat": "Édition",                 "url": "https://www.gallimard.fr/Gallimard/Groupe-Gallimard/Emplois-et-stages"},
+    {"name": "Combat",               "cat": "Édition",                 "url": "https://www.welcometothejungle.com/fr/companies/combat/jobs"},
     # ── Adtech / médiatech ───────────────────────────────────────
-    {"name": "Equativ",         "url": "https://equativ.com/careers/"},
-    {"name": "Teads",           "url": "https://www.teads.com/careers/"},
-    {"name": "Ogury",           "url": "https://ogury.com/careers/"},
-    {"name": "Poool",           "url": "https://www.welcometothejungle.com/fr/companies/poool/jobs"},
-    {"name": "Welcome to the Jungle","url": "https://www.welcometothejungle.com/fr/companies/welcome-to-the-jungle/jobs"},
-    {"name": "Scoop.it",        "url": "https://www.welcometothejungle.com/fr/companies/scoopit/jobs"},
-    {"name": "Twipe",           "url": "https://www.twipemobile.com/careers/"},
+    {"name": "Equativ",              "cat": "Adtech / médiatech",      "url": "https://equativ.com/careers/"},
+    {"name": "Teads",                "cat": "Adtech / médiatech",      "url": "https://www.teads.com/careers/"},
+    {"name": "Ogury",                "cat": "Adtech / médiatech",      "url": "https://ogury.com/careers/"},
+    {"name": "Poool",                "cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/poool/jobs"},
+    {"name": "Welcome to the Jungle","cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/welcome-to-the-jungle/jobs"},
+    {"name": "Scoop.it",             "cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/scoopit/jobs"},
+    {"name": "Twipe",                "cat": "Adtech / médiatech",      "url": "https://www.twipemobile.com/careers/"},
 ]
 
 HEADERS = {
@@ -103,117 +90,100 @@ def save_cache(cache):
 def page_hash(text):
     return hashlib.md5(text.encode("utf-8", errors="ignore")).hexdigest()
 
-# ── Scraping ─────────────────────────────────────────────────────
+# ── Fetch ────────────────────────────────────────────────────────
 
 def fetch_page(url):
     try:
         r = requests.get(url, headers=HEADERS, timeout=15)
         r.raise_for_status()
         return r.text
-    except Exception as e:
+    except Exception:
         return None
-
-def extract_jobs(html, company_name):
-    """
-    Extrait les intitulés de postes qui contiennent au moins un mot-clé.
-    Retourne une liste de strings.
-    """
-    soup = BeautifulSoup(html, "html.parser")
-    # Supprime scripts et styles
-    for tag in soup(["script", "style", "nav", "footer", "header"]):
-        tag.decompose()
-
-    text_blocks = []
-    # Cherche les éléments susceptibles de contenir des titres de postes
-    for tag in soup.find_all(["h1", "h2", "h3", "h4", "li", "a", "span", "p"]):
-        t = tag.get_text(strip=True)
-        if 10 < len(t) < 120:  # filtre longueur pertinente
-            text_blocks.append(t)
-
-    # Déduplique
-    seen = set()
-    results = []
-    for block in text_blocks:
-        block_lower = block.lower()
-        if block in seen:
-            continue
-        seen.add(block)
-        if any(kw in block_lower for kw in KEYWORDS):
-            results.append(block)
-
-    return results[:15]  # max 15 résultats par entreprise
 
 # ── Email ─────────────────────────────────────────────────────────
 
-def build_email_html(results_by_company, new_companies, today):
-    total_new = sum(len(v["new"]) for v in results_by_company.values())
-    total_companies_with_news = len([v for v in results_by_company.values() if v["new"]])
+def build_email_html(results, today):
+    changed   = [r for r in results if r["status"] == "changed"]
+    unchanged = [r for r in results if r["status"] == "unchanged"]
+    failed    = [r for r in results if r["status"] == "error"]
+
+    if changed:
+        banner = f"""
+        <div style="background:#e8f5e2;border-left:4px solid #3B6D11;padding:12px 16px;border-radius:4px;margin-bottom:28px;">
+          <strong style="color:#27500A">🆕 {len(changed)} page(s) modifiée(s) depuis hier</strong>
+          — va vérifier, il y a peut-être de nouvelles offres !
+        </div>"""
+    else:
+        banner = f"""
+        <div style="background:#f5f5f5;border-left:4px solid #aaa;padding:12px 16px;border-radius:4px;margin-bottom:28px;">
+          <span style="color:#555">Aucun changement détecté aujourd'hui sur les {len(unchanged)} pages surveillées.</span>
+        </div>"""
+
+    cats = {}
+    for r in results:
+        cats.setdefault(r["cat"], []).append(r)
 
     sections = []
+    for cat, items in cats.items():
+        rows = ""
+        for r in items:
+            if r["status"] == "changed":
+                icon  = "🆕"
+                color = "#27500A"
+                bg    = "#f0f7ee"
+                label = "page modifiée"
+            elif r["status"] == "error":
+                icon  = "⚠️"
+                color = "#856404"
+                bg    = "#fffbe6"
+                label = "inaccessible"
+            else:
+                icon  = "✓"
+                color = "#aaa"
+                bg    = "transparent"
+                label = "aucun changement"
 
-    if total_new > 0:
-        sections.append(f"""
-        <div style="background:#f0f7ee;border-left:4px solid #3B6D11;padding:12px 16px;border-radius:4px;margin-bottom:24px;">
-          <strong style="color:#27500A">🆕 {total_new} nouvelle(s) offre(s) détectée(s)</strong>
-          sur {total_companies_with_news} entreprise(s)
-        </div>""")
-
-    for company, data in sorted(results_by_company.items()):
-        new_jobs  = data["new"]
-        all_jobs  = data["all"]
-        url       = data["url"]
-        is_new_co = company in new_companies
-
-        if not all_jobs and not is_new_co:
-            badge = '<span style="color:#888;font-size:12px">— aucune offre détectée</span>'
-        else:
-            badge = ""
-
-        new_html = ""
-        if new_jobs:
-            items = "".join(
-                f'<li style="margin:4px 0;color:#27500A">✦ {j}</li>'
-                for j in new_jobs
-            )
-            new_html = f'<ul style="margin:6px 0 0 0;padding-left:18px;list-style:none">{items}</ul>'
-
-        other_html = ""
-        other_jobs = [j for j in all_jobs if j not in new_jobs]
-        if other_jobs:
-            items = "".join(
-                f'<li style="margin:3px 0;color:#555">· {j}</li>'
-                for j in other_jobs
-            )
-            other_html = f'<ul style="margin:6px 0 0 0;padding-left:18px;list-style:none;font-size:13px">{items}</ul>'
+            rows += f"""
+            <tr>
+              <td style="padding:9px 8px;background:{bg};border-radius:4px;border-bottom:1px solid #f0f0f0;">
+                <span style="font-size:13px;font-weight:{'600' if r['status']=='changed' else '400'};color:#222">{icon} {r['name']}</span>
+                <span style="font-size:11px;color:{color};margin-left:8px">{label}</span>
+              </td>
+              <td style="padding:9px 8px;text-align:right;border-bottom:1px solid #f0f0f0;white-space:nowrap;">
+                <a href="{r['url']}" style="font-size:12px;color:#185FA5;text-decoration:none">→ Voir les offres</a>
+              </td>
+            </tr>"""
 
         sections.append(f"""
-        <div style="border:1px solid #e0e0e0;border-radius:8px;padding:14px 18px;margin-bottom:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-            <strong style="font-size:15px">{company}</strong>
-            <a href="{url}" style="font-size:12px;color:#185FA5;text-decoration:none">→ Page carrières</a>
-          </div>
-          {badge}
-          {new_html}
-          {other_html}
+        <div style="margin-bottom:28px;">
+          <p style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px">{cat}</p>
+          <table style="width:100%;border-collapse:collapse;">{rows}</table>
         </div>""")
 
     body = "\n".join(sections)
+    failed_note = f"<p style='font-size:12px;color:#bbb;margin-top:8px'>⚠️ {len(failed)} site(s) inaccessible(s) : {', '.join(r['name'] for r in failed)}</p>" if failed else ""
 
     return f"""
-    <html><body style="font-family:system-ui,sans-serif;max-width:680px;margin:auto;padding:24px;color:#222">
-      <h2 style="font-size:20px;font-weight:600;margin-bottom:4px">Veille emploi — {today}</h2>
-      <p style="color:#666;font-size:14px;margin-bottom:24px">
-        Récap quotidien · {len(results_by_company)} entreprises surveillées
-      </p>
+    <html><body style="font-family:system-ui,sans-serif;max-width:660px;margin:auto;padding:28px 24px;color:#222;background:#fff">
+      <h2 style="font-size:19px;font-weight:600;margin:0 0 4px">Veille emploi — {today}</h2>
+      <p style="color:#999;font-size:13px;margin:0 0 24px">{len(results)} entreprises surveillées</p>
+      {banner}
       {body}
-      <p style="margin-top:32px;font-size:12px;color:#aaa;border-top:1px solid #eee;padding-top:12px">
-        Script de veille personnalisé · robjuillet@gmail.com
+      {failed_note}
+      <p style="margin-top:32px;font-size:11px;color:#ddd;border-top:1px solid #f0f0f0;padding-top:12px">
+        Veille automatique · robjuillet@gmail.com
       </p>
     </body></html>"""
 
-def send_email(html_body, today):
+def send_email(html_body, today, nb_changed):
+    subject = f"[Veille emploi] {today}"
+    if nb_changed:
+        subject += f" — 🆕 {nb_changed} nouveauté(s)"
+    else:
+        subject += " — aucun changement"
+
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"[Veille emploi] Récap du {today}"
+    msg["Subject"] = subject
     msg["From"]    = SENDER_EMAIL
     msg["To"]      = RECIPIENT_EMAIL
     msg.attach(MIMEText(html_body, "html"))
@@ -228,45 +198,40 @@ def main():
     today = date.today().strftime("%d/%m/%Y")
     cache = load_cache()
     new_cache = {}
-    results_by_company = {}
-    new_companies = set()
+    results = []
 
     for company in COMPANIES:
         name = company["name"]
         url  = company["url"]
+        cat  = company["cat"]
         print(f"→ {name}...")
 
         html = fetch_page(url)
         if not html:
-            print(f"   ⚠ Impossible d'accéder à {url}")
+            print(f"   ⚠ Inaccessible")
+            results.append({"name": name, "cat": cat, "url": url, "status": "error"})
+            new_cache[name] = cache.get(name, {})
             continue
 
-        current_hash = page_hash(html)
+        current_hash  = page_hash(html)
         previous_hash = cache.get(name, {}).get("hash")
-        previous_jobs = cache.get(name, {}).get("jobs", [])
-
-        jobs = extract_jobs(html, name)
-        new_cache[name] = {"hash": current_hash, "jobs": jobs}
+        new_cache[name] = {"hash": current_hash}
 
         if previous_hash is None:
-            new_companies.add(name)
-            new_jobs = jobs
+            status = "unchanged"
         elif current_hash != previous_hash:
-            new_jobs = [j for j in jobs if j not in previous_jobs]
+            status = "changed"
         else:
-            new_jobs = []
+            status = "unchanged"
 
-        results_by_company[name] = {
-            "new": new_jobs,
-            "all": jobs,
-            "url": url,
-        }
+        results.append({"name": name, "cat": cat, "url": url, "status": status})
 
     save_cache(new_cache)
 
-    html_body = build_email_html(results_by_company, new_companies, today)
-    send_email(html_body, today)
-    print(f"\n✓ Email envoyé à {RECIPIENT_EMAIL}")
+    nb_changed = len([r for r in results if r["status"] == "changed"])
+    html_body  = build_email_html(results, today)
+    send_email(html_body, today, nb_changed)
+    print(f"\n✓ Email envoyé — {nb_changed} changement(s) détecté(s)")
 
 if __name__ == "__main__":
     main()
