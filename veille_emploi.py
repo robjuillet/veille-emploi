@@ -8,10 +8,29 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # ── Configuration ────────────────────────────────────────────────
-RECIPIENT_EMAIL = "robjuillet@gmail.com"
-SENDER_EMAIL    = os.environ["SENDER_EMAIL"]
-SENDER_PASSWORD = os.environ["SENDER_PASSWORD"]
-CACHE_FILE      = "jobs_cache.json"
+RECIPIENT_EMAIL  = "robjuillet@gmail.com"
+SENDER_EMAIL     = os.environ["SENDER_EMAIL"]
+SENDER_PASSWORD  = os.environ["SENDER_PASSWORD"]
+ANTHROPIC_KEY    = os.environ["ANTHROPIC_API_KEY"]
+CACHE_FILE       = "jobs_cache.json"
+
+PROFIL = """
+Robinson Juillet, 30 ans, Paris.
+Après 5 ans de conseil en stratégie chez DEMAIN Conseil (missions médias, plateformes, streaming),
+puis un poste de chef de projet numérique à la Ville de Paris, il cherche une nouvelle aventure professionnelle.
+Ce qui l'anime : les plateformes de contenu, les nouveaux usages médias, le streaming, l'édition numérique,
+les environnements culturellement vivants et ambitieux. Il aime les structures dynamiques où les sujets sont
+exigeants et les interlocuteurs inspirants — grands groupes ou scale-ups, peu importe la taille.
+Il fuit le public, le corporate sans âme et le retail.
+Expériences clés : TF1+, M6+, arte, France Télévisions, Cité des Sciences.
+Rôles recherchés : stratégie, business development, produit, contenus, partenariats, plateformes.
+Il surveille déjà : Cafeyn, Deezer, Dailymotion, Molotov, Acast, Spotify, Netflix, Disney+, Paramount+,
+TF1, M6, France Télévisions, Canal+, Radio France, arte, Telerama, Les Inrockuptibles, Society, Brut,
+Konbini, Loopsider, Usbek & Rica, Prisma Media, Reworld Media, Mediawan, Newen Studios, Gaumont, UGC,
+SND Films, mk2, Gaîté Lyrique, La Villette, Philharmonie de Paris, Lafayette Anticipations,
+Flammarion, Actes Sud, Gallimard, Combat, Equativ, Teads, Ogury, Poool, Welcome to the Jungle,
+Scoop.it, Twipe.
+"""
 
 COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
@@ -100,12 +119,56 @@ def fetch_page(url):
     except Exception:
         return None
 
+# ── Recommandations via Claude ───────────────────────────────────
+
+def get_recommandations():
+    prompt = f"""Tu es un conseiller en carrière spécialisé dans les médias, les plateformes digitales et la tech culturelle en France.
+
+Voici le profil de la personne :
+{PROFIL}
+
+Ta mission : suggère 3 entreprises ou structures que cette personne ne surveille pas encore et qui pourraient l'intéresser.
+Choisis des structures variées — mélange de grandes entreprises et de structures plus petites, françaises ou internationales présentes en France.
+Pour chacune, donne :
+- Le nom de la structure
+- Une phrase courte sur ce qu'elle fait
+- Une phrase courte expliquant pourquoi elle correspond au profil
+
+Réponds UNIQUEMENT en JSON valide, sans texte autour, sans balises markdown, sous ce format exact :
+[
+  {{"nom": "Nom", "description": "Ce qu'elle fait.", "raison": "Pourquoi ça correspond."}},
+  {{"nom": "Nom", "description": "Ce qu'elle fait.", "raison": "Pourquoi ça correspond."}},
+  {{"nom": "Nom", "description": "Ce qu'elle fait.", "raison": "Pourquoi ça correspond."}}
+]"""
+
+    try:
+        r = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 800,
+                "messages": [{"role": "user", "content": prompt}],
+            },
+            timeout=30,
+        )
+        r.raise_for_status()
+        text = r.json()["content"][0]["text"].strip()
+        return json.loads(text)
+    except Exception as e:
+        print(f"⚠ Erreur recommandations : {e}")
+        return []
+
 # ── Email ─────────────────────────────────────────────────────────
 
-def build_email_html(results, today):
-    changed   = [r for r in results if r["status"] == "changed"]
-    unchanged = [r for r in results if r["status"] == "unchanged"]
-    failed    = [r for r in results if r["status"] == "error"]
+def build_email_html(results, recommandations, today):
+    changed  = [r for r in results if r["status"] == "changed"]
+    unchanged= [r for r in results if r["status"] == "unchanged"]
+    failed   = [r for r in results if r["status"] == "error"]
 
     if changed:
         banner = f"""
@@ -119,6 +182,7 @@ def build_email_html(results, today):
           <span style="color:#555">Aucun changement détecté aujourd'hui sur les {len(unchanged)} pages surveillées.</span>
         </div>"""
 
+    # Section veille
     cats = {}
     for r in results:
         cats.setdefault(r["cat"], []).append(r)
@@ -128,25 +192,16 @@ def build_email_html(results, today):
         rows = ""
         for r in items:
             if r["status"] == "changed":
-                icon  = "🆕"
-                color = "#27500A"
-                bg    = "#f0f7ee"
-                label = "page modifiée"
+                icon  = "🆕"; color = "#27500A"; bg = "#f0f7ee"; label = "page modifiée"; weight = "600"
             elif r["status"] == "error":
-                icon  = "⚠️"
-                color = "#856404"
-                bg    = "#fffbe6"
-                label = "inaccessible"
+                icon  = "⚠️"; color = "#856404"; bg = "#fffbe6"; label = "inaccessible"; weight = "400"
             else:
-                icon  = "✓"
-                color = "#aaa"
-                bg    = "transparent"
-                label = "aucun changement"
+                icon  = "✓"; color = "#aaa"; bg = "transparent"; label = "aucun changement"; weight = "400"
 
             rows += f"""
             <tr>
               <td style="padding:9px 8px;background:{bg};border-radius:4px;border-bottom:1px solid #f0f0f0;">
-                <span style="font-size:13px;font-weight:{'600' if r['status']=='changed' else '400'};color:#222">{icon} {r['name']}</span>
+                <span style="font-size:13px;font-weight:{weight};color:#222">{icon} {r['name']}</span>
                 <span style="font-size:11px;color:{color};margin-left:8px">{label}</span>
               </td>
               <td style="padding:9px 8px;text-align:right;border-bottom:1px solid #f0f0f0;white-space:nowrap;">
@@ -160,6 +215,27 @@ def build_email_html(results, today):
           <table style="width:100%;border-collapse:collapse;">{rows}</table>
         </div>""")
 
+    # Section recommandations
+    if recommandations:
+        reco_cards = ""
+        for reco in recommandations:
+            reco_cards += f"""
+            <div style="border:1px solid #e8e8e8;border-radius:8px;padding:12px 16px;margin-bottom:10px;">
+              <p style="font-size:14px;font-weight:600;color:#222;margin:0 0 4px">✦ {reco.get('nom', '')}</p>
+              <p style="font-size:13px;color:#555;margin:0 0 4px">{reco.get('description', '')}</p>
+              <p style="font-size:12px;color:#185FA5;margin:0">→ {reco.get('raison', '')}</p>
+            </div>"""
+
+        reco_section = f"""
+        <div style="margin-top:36px;padding-top:24px;border-top:1px solid #eee;">
+          <p style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 16px">
+            À explorer — structures suggérées par Claude
+          </p>
+          {reco_cards}
+        </div>"""
+    else:
+        reco_section = ""
+
     body = "\n".join(sections)
     failed_note = f"<p style='font-size:12px;color:#bbb;margin-top:8px'>⚠️ {len(failed)} site(s) inaccessible(s) : {', '.join(r['name'] for r in failed)}</p>" if failed else ""
 
@@ -170,6 +246,7 @@ def build_email_html(results, today):
       {banner}
       {body}
       {failed_note}
+      {reco_section}
       <p style="margin-top:32px;font-size:11px;color:#ddd;border-top:1px solid #f0f0f0;padding-top:12px">
         Veille automatique · robjuillet@gmail.com
       </p>
@@ -228,10 +305,13 @@ def main():
 
     save_cache(new_cache)
 
+    print("→ Génération des recommandations...")
+    recommandations = get_recommandations()
+
     nb_changed = len([r for r in results if r["status"] == "changed"])
-    html_body  = build_email_html(results, today)
+    html_body  = build_email_html(results, recommandations, today)
     send_email(html_body, today, nb_changed)
-    print(f"\n✓ Email envoyé — {nb_changed} changement(s) détecté(s)")
+    print(f"\n✓ Email envoyé — {nb_changed} changement(s), {len(recommandations)} recommandation(s)")
 
 if __name__ == "__main__":
     main()
