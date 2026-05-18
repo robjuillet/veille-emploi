@@ -36,7 +36,7 @@ COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
     {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs"},
     {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezerjobs.com/fr/offres/"},
-    {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://www.dailymotion.com/fr/careers"},
+    {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://careers.dailymotion.com/jobs/"},
     {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://molotov-tv.welcomekit.co/"},
     {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://careers.acast.com/jobs"},
     {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs?l=Paris"},
