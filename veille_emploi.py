@@ -11,7 +11,7 @@ from email.mime.multipart import MIMEMultipart
 RECIPIENT_EMAIL  = "robjuillet@gmail.com"
 SENDER_EMAIL     = os.environ["SENDER_EMAIL"]
 SENDER_PASSWORD  = os.environ["SENDER_PASSWORD"]
-ANTHROPIC_KEY    = os.environ["ANTHROPIC_API_KEY"]
+ANTHROPIC_KEY    = os.environ.get("ANTHROPIC_API_KEY", "")  # optionnel
 CACHE_FILE       = "jobs_cache.json"
 
 PROFIL = """
@@ -119,9 +119,13 @@ def fetch_page(url):
     except Exception:
         return None
 
-# ── Recommandations via Claude ───────────────────────────────────
+# ── Recommandations via Claude (optionnel) ───────────────────────
 
 def get_recommandations():
+    if not ANTHROPIC_KEY:
+        print("⚠ Pas de clé Anthropic — recommandations désactivées")
+        return []
+
     prompt = f"""Tu es un conseiller en carrière spécialisé dans les médias, les plateformes digitales et la tech culturelle en France.
 
 Voici le profil de la personne :
@@ -182,7 +186,6 @@ def build_email_html(results, recommandations, today):
           <span style="color:#555">Aucun changement détecté aujourd'hui sur les {len(unchanged)} pages surveillées.</span>
         </div>"""
 
-    # Section veille
     cats = {}
     for r in results:
         cats.setdefault(r["cat"], []).append(r)
@@ -192,11 +195,11 @@ def build_email_html(results, recommandations, today):
         rows = ""
         for r in items:
             if r["status"] == "changed":
-                icon  = "🆕"; color = "#27500A"; bg = "#f0f7ee"; label = "page modifiée"; weight = "600"
+                icon = "🆕"; color = "#27500A"; bg = "#f0f7ee"; label = "page modifiée"; weight = "600"
             elif r["status"] == "error":
-                icon  = "⚠️"; color = "#856404"; bg = "#fffbe6"; label = "inaccessible"; weight = "400"
+                icon = "⚠️"; color = "#856404"; bg = "#fffbe6"; label = "inaccessible"; weight = "400"
             else:
-                icon  = "✓"; color = "#aaa"; bg = "transparent"; label = "aucun changement"; weight = "400"
+                icon = "✓"; color = "#aaa"; bg = "transparent"; label = "aucun changement"; weight = "400"
 
             rows += f"""
             <tr>
@@ -215,7 +218,6 @@ def build_email_html(results, recommandations, today):
           <table style="width:100%;border-collapse:collapse;">{rows}</table>
         </div>""")
 
-    # Section recommandations
     if recommandations:
         reco_cards = ""
         for reco in recommandations:
@@ -225,11 +227,10 @@ def build_email_html(results, recommandations, today):
               <p style="font-size:13px;color:#555;margin:0 0 4px">{reco.get('description', '')}</p>
               <p style="font-size:12px;color:#185FA5;margin:0">→ {reco.get('raison', '')}</p>
             </div>"""
-
         reco_section = f"""
         <div style="margin-top:36px;padding-top:24px;border-top:1px solid #eee;">
           <p style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 16px">
-            À explorer — structures suggérées par Claude
+            À explorer — suggestions du jour
           </p>
           {reco_cards}
         </div>"""
