@@ -34,7 +34,7 @@ Scoop.it, Twipe.
 
 COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
-    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs"},
+    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs?split_view=true&query=&location=Paris"},
     {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezerjobs.com/fr/offres/"},
     {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://careers.dailymotion.com/jobs/"},
     {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://molotov-tv.welcomekit.co/"},
