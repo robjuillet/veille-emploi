@@ -60,7 +60,7 @@ COMPANIES = [
     # ── Cinéma & production ──────────────────────────────────────
     {"name": "Mediawan",             "cat": "Cinéma & production",     "url": "https://career.mediawan.com/fr/annonces"},
     {"name": "Gaumont",              "cat": "Cinéma & production",     "url": "https://www.gaumont.com/fr/valeurs-engagement-rse-rh"},
-    {"name": "UGC",                  "cat": "Cinéma & production",     "url": "https://www.ugc.fr/groupeUGCOffresAction#resultats"},
+    {"name": "UGC",                  "cat": "Cinéma & production",     "url": "https://www.ugc.fr/metiers-recrutement.html"},
     {"name": "SND Films",            "cat": "Cinéma & production",     "url": "https://www.recrutement.groupem6.fr/offre-de-emploi/liste-offres.aspx"},
     {"name": "mk2",                  "cat": "Cinéma & production",     "url": "https://mk2pro.com/nous-rejoindre/"},
     # ── Culture & institutions ───────────────────────────────────
