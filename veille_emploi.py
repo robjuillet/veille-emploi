@@ -15,12 +15,12 @@ CACHE_FILE      = "jobs_cache.json"
 
 COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
-    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://www.welcometothejungle.com/fr/companies/cafeyn/jobs"},
-    {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezer.com/fr/company/jobs"},
+    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs"},
+    {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezerjobs.com/fr/offres/"},
     {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://www.dailymotion.com/fr/careers"},
-    {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://www.welcometothejungle.com/fr/companies/molotov/jobs"},
-    {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://www.acast.com/en/jobs"},
-    {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs"},
+    {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://molotov-tv.welcomekit.co/"},
+    {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://careers.acast.com/jobs"},
+    {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs?l=Paris"},
     {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://jobs.netflix.com/search?location=Paris%2C%20France"},
     {"name": "Disney+",              "cat": "Streaming & plateformes", "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
     {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search-jobs/Paris"},
