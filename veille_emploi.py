@@ -42,7 +42,7 @@ COMPANIES = [
     {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs?l=Paris"},
     {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://explore.jobs.netflix.net/careers?query=%2A&location=Paris%2C%20IDF%2C%20France&pid=790315756419&domain=netflix.com&sort_by=relevance"},
     {"name": "Disney+",              "cat": "Streaming & plateformes", "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
-    {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search-jobs/Paris"},
+    {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search/?createNewAlert=false&q=&locationsearch=France&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=&optionsFacetsDD_customfield3="},
     # ── Médias & presse ──────────────────────────────────────────
     {"name": "TF1 Group",            "cat": "Médias & presse",         "url": "https://carrieres.groupe-tf1.fr/go/Toutes-nos-offres/4293001/"},
     {"name": "M6 Group",             "cat": "Médias & presse",         "url": "https://www.groupem6.fr/offres/"},
