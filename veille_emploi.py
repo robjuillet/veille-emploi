@@ -47,7 +47,7 @@ COMPANIES = [
     {"name": "TF1 Group",            "cat": "Médias & presse",         "url": "https://carrieres.groupe-tf1.fr/go/Toutes-nos-offres/4293001/"},
     {"name": "M6 Group",             "cat": "Médias & presse",         "url": "https://www.groupem6.fr/offres/?_contract_type=cdi"},
     {"name": "France Télévisions",   "cat": "Médias & presse",         "url": "https://recrutement.francetelevisions.fr/search/?createNewAlert=false&q=&optionsFacetsDD_shifttype=&optionsFacetsDD_department=&optionsFacetsDD_city="},
-    {"name": "Canal+",               "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/canal-group/jobs"},
+    {"name": "Canal+",               "cat": "Médias & presse",         "url": "https://joinus.canalplus.com/go/Nos-offres/8554202/"},
     {"name": "Radio France",         "cat": "Médias & presse",         "url": "https://radiofrance-recrute.talent-soft.com/offre-de-emploi/liste-toutes-offres.aspx"},
     {"name": "arte",                 "cat": "Médias & presse",         "url": "https://emploi.artefrance.fr/offre"},
     {"name": "Telerama",             "cat": "Médias & presse",         "url": "https://recrutement.lemonde.fr"},
