@@ -51,8 +51,6 @@ COMPANIES = [
     {"name": "Radio France",         "cat": "Médias & presse",         "url": "https://radiofrance-recrute.talent-soft.com/offre-de-emploi/liste-toutes-offres.aspx"},
     {"name": "arte",                 "cat": "Médias & presse",         "url": "https://emploi.artefrance.fr/offre"},
     {"name": "Telerama",             "cat": "Médias & presse",         "url": "https://recrutement.lemonde.fr"},
-    {"name": "Les Inrockuptibles",   "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/les-inrockuptibles/jobs"},
-    {"name": "Society / SoPress",    "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/society/jobs"},
     {"name": "Brut",                 "cat": "Médias & presse",         "url": "https://brutfrance.teamtailor.com/jobs"},
     {"name": "Konbini",              "cat": "Médias & presse",         "url": "https://konbini.welcomekit.co/"},
     {"name": "Loopsider",            "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/loopsider/jobs"},
@@ -61,7 +59,6 @@ COMPANIES = [
     {"name": "Reworld Media",        "cat": "Médias & presse",         "url": "https://careers.werecruit.io/fr/reworld-media?lieuList=92---arcueil%2C92---boulogne-billancourt&typeDeContratList=1#block-0a380d96-1bee-4330-925a-10a3c83212ee"},
     # ── Cinéma & production ──────────────────────────────────────
     {"name": "Mediawan",             "cat": "Cinéma & production",     "url": "https://career.mediawan.com/fr/annonces"},
-    {"name": "Newen Studios",        "cat": "Cinéma & production",     "url": "https://www.jobteaser.com/fr/companies/newen-studios/job-offers?contract=cdi"},
     {"name": "Gaumont",              "cat": "Cinéma & production",     "url": "https://www.gaumont.com/fr/valeurs-engagement-rse-rh"},
     {"name": "UGC",                  "cat": "Cinéma & production",     "url": "https://www.ugc.fr/metiers-recrutement.html"},
     {"name": "SND Films",            "cat": "Cinéma & production",     "url": "https://www.recrutement.groupem6.fr/offre-de-emploi/liste-offres.aspx"},
@@ -73,8 +70,6 @@ COMPANIES = [
     {"name": "Lafayette Anticipations","cat": "Culture & institutions","url": "https://www.lafayetteanticipations.com/fr/recrutement"},
     # ── Édition ──────────────────────────────────────────────────
     {"name": "Flammarion",           "cat": "Édition",                 "url": "https://madrigall.nous-recrutons.fr/offres-emploi/"},
-    {"name": "Actes Sud",            "cat": "Édition",                 "url": "https://www.actes-sud.fr/recrutement"},
-    {"name": "Combat",               "cat": "Édition",                 "url": "https://www.welcometothejungle.com/fr/companies/combat/jobs"},
     # ── Adtech / médiatech ───────────────────────────────────────
     {"name": "Equativ",              "cat": "Adtech / médiatech",      "url": "https://equativ.com/careers/"},
     {"name": "Teads",                "cat": "Adtech / médiatech",      "url": "https://www.teads.com/fr/teads-careers/job-openings/?_job-locations=paris"},
