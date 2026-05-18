@@ -1,0 +1,45 @@
+name: Veille emploi quotidienne
+
+on:
+  schedule:
+    # Tourne tous les matins à 7h00 (heure Paris, UTC+1/+2 selon saison)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Permet aussi de lancer manuellement depuis GitHub (bouton "Run workflow")
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installer les dépendances
+        run: pip install requests beautifulsoup4
+
+      - name: Restaurer le cache des offres
+        uses: actions/cache@v4
+        with:
+          path: jobs_cache.json
+          key: jobs-cache-${{ github.run_id }}
+          restore-keys: |
+            jobs-cache-
+
+      - name: Lancer le script de veille
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+        run: python veille_emploi.py
+
+      - name: Sauvegarder le cache mis à jour
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: jobs_cache.json
+          key: jobs-cache-${{ github.run_id }}
