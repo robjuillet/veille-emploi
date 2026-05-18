@@ -40,7 +40,7 @@ COMPANIES = [
     {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://molotov-tv.welcomekit.co/"},
     {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://careers.acast.com/jobs"},
     {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs?l=Paris"},
-    {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://jobs.netflix.com/search?location=Paris%2C%20France"},
+    {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://explore.jobs.netflix.net/careers?query=%2A&location=Paris%2C%20IDF%2C%20France&pid=790315756419&domain=netflix.com&sort_by=relevance"},
     {"name": "Disney+",              "cat": "Streaming & plateformes", "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
     {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search-jobs/Paris"},
     # ── Médias & presse ──────────────────────────────────────────
