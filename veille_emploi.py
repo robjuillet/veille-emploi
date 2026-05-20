@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 RECIPIENT_EMAIL  = "robjuillet@gmail.com"
 SENDER_EMAIL     = os.environ["SENDER_EMAIL"]
 SENDER_PASSWORD  = os.environ["SENDER_PASSWORD"]
-ANTHROPIC_KEY    = os.environ.get("ANTHROPIC_API_KEY", "")
+ANTHROPIC_KEY    = os.environ.get("ANTHROPIC_API_KEY", "")  # optionnel
 CACHE_FILE       = "jobs_cache.json"
 
 PROFIL = """
@@ -26,60 +26,57 @@ exigeants et les interlocuteurs inspirants — grands groupes ou scale-ups, peu 
 Il fuit le public, le corporate sans âme et le retail.
 Expériences clés : TF1+, M6+, arte, France Télévisions, Cité des Sciences.
 Rôles recherchés : stratégie, business development, produit, contenus, partenariats, plateformes.
+Il surveille déjà : Cafeyn, Deezer, Dailymotion, Molotov, Acast, Spotify, Netflix, Disney+, Paramount+,
+TF1, M6, France Télévisions, Canal+, Radio France, arte, Telerama, Les Inrockuptibles, Society, Brut,
+Konbini, Loopsider, Usbek & Rica, Prisma Media, Reworld Media, Mediawan, Newen Studios, Gaumont, UGC,
+SND Films, mk2, Gaîté Lyrique, La Villette, Philharmonie de Paris, Lafayette Anticipations,
+Flammarion, Actes Sud, Gallimard, Combat, Equativ, Teads, Ogury, Poool, Welcome to the Jungle,
+Scoop.it, Twipe.
 """
 
 COMPANIES = [
     # ── Streaming & plateformes ──────────────────────────────────
-    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs"},
+    {"name": "Cafeyn",               "cat": "Streaming & plateformes", "url": "https://careers.cafeyn.co/jobs?split_view=true&query=&location=Paris"},
     {"name": "Deezer",               "cat": "Streaming & plateformes", "url": "https://www.deezerjobs.com/fr/offres/"},
-    {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://www.dailymotion.com/fr/careers"},
+    {"name": "Dailymotion",          "cat": "Streaming & plateformes", "url": "https://careers.dailymotion.com/jobs/"},
     {"name": "Molotov",              "cat": "Streaming & plateformes", "url": "https://molotov-tv.welcomekit.co/"},
     {"name": "Acast",                "cat": "Streaming & plateformes", "url": "https://careers.acast.com/jobs"},
     {"name": "Spotify",              "cat": "Streaming & plateformes", "url": "https://www.lifeatspotify.com/jobs?l=Paris"},
-    {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://jobs.netflix.com/search?location=Paris%2C%20France"},
+    {"name": "Netflix",              "cat": "Streaming & plateformes", "url": "https://explore.jobs.netflix.net/careers?query=%2A&location=Paris%2C%20IDF%2C%20France&pid=790315756419&domain=netflix.com&sort_by=relevance"},
     {"name": "Disney+",              "cat": "Streaming & plateformes", "url": "https://jobs.disneycareers.com/search-jobs/Paris"},
-    {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search-jobs/Paris"},
-    {"name": "Amazon Prime Video",   "cat": "Streaming & plateformes", "url": "https://www.amazon.jobs/fr/teams/prime-video"},
+    {"name": "Paramount+",           "cat": "Streaming & plateformes", "url": "https://careers.paramount.com/search/?createNewAlert=false&q=&locationsearch=France&optionsFacetsDD_customfield1=&optionsFacetsDD_customfield2=&optionsFacetsDD_customfield3="},
     # ── Médias & presse ──────────────────────────────────────────
-    {"name": "TF1 Group",            "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/groupe-tf1/jobs"},
-    {"name": "M6 Group",             "cat": "Médias & presse",         "url": "https://www.groupem6.fr/offres/"},
-    {"name": "France Télévisions",   "cat": "Médias & presse",         "url": "https://recrutement.francetelevisions.fr/offre-de-emploi/liste-toutes-offres.aspx"},
-    {"name": "Canal+",               "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/canal-group/jobs"},
+    {"name": "TF1 Group",            "cat": "Médias & presse",         "url": "https://carrieres.groupe-tf1.fr/go/Toutes-nos-offres/4293001/"},
+    {"name": "M6 Group",             "cat": "Médias & presse",         "url": "https://www.groupem6.fr/offres/?_contract_type=cdi"},
+    {"name": "France Télévisions",   "cat": "Médias & presse",         "url": "https://recrutement.francetelevisions.fr/search/?createNewAlert=false&q=&optionsFacetsDD_shifttype=&optionsFacetsDD_department=&optionsFacetsDD_city="},
+    {"name": "Canal+",               "cat": "Médias & presse",         "url": "https://joinus.canalplus.com/go/Nos-offres/8554202/"},
     {"name": "Radio France",         "cat": "Médias & presse",         "url": "https://radiofrance-recrute.talent-soft.com/offre-de-emploi/liste-toutes-offres.aspx"},
     {"name": "arte",                 "cat": "Médias & presse",         "url": "https://emploi.artefrance.fr/offre"},
     {"name": "Telerama",             "cat": "Médias & presse",         "url": "https://recrutement.lemonde.fr"},
-    {"name": "Les Inrockuptibles",   "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/les-inrockuptibles/jobs"},
-    {"name": "Society / SoPress",    "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/society/jobs"},
-    {"name": "Brut",                 "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/brut/jobs"},
+    {"name": "Brut",                 "cat": "Médias & presse",         "url": "https://brutfrance.teamtailor.com/jobs"},
     {"name": "Konbini",              "cat": "Médias & presse",         "url": "https://konbini.welcomekit.co/"},
     {"name": "Loopsider",            "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/loopsider/jobs"},
-    {"name": "Usbek & Rica",         "cat": "Médias & presse",         "url": "https://usbeketrica.com/fr/jobs"},
-    {"name": "Prisma Media",         "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/prisma-media/jobs"},
-    {"name": "Reworld Media",        "cat": "Médias & presse",         "url": "https://www.welcometothejungle.com/fr/companies/reworld-media/jobs"},
+    {"name": "Usbek & Rica",         "cat": "Médias & presse",         "url": "https://jobs.makesense.org/fr/projects/usbek-rica-1622"},
+    {"name": "Prisma Media",         "cat": "Médias & presse",         "url": "https://emploi.prismamedia.com/jobs?split_view=true&query=&employment_type=contract"},
+    {"name": "Reworld Media",        "cat": "Médias & presse",         "url": "https://careers.werecruit.io/fr/reworld-media?lieuList=92---arcueil%2C92---boulogne-billancourt&typeDeContratList=1#block-0a380d96-1bee-4330-925a-10a3c83212ee"},
     # ── Cinéma & production ──────────────────────────────────────
-    {"name": "Mediawan",             "cat": "Cinéma & production",     "url": "https://www.welcometothejungle.com/fr/companies/mediawan/jobs"},
-    {"name": "Newen Studios",        "cat": "Cinéma & production",     "url": "https://www.welcometothejungle.com/fr/companies/newen-studios/jobs"},
+    {"name": "Mediawan",             "cat": "Cinéma & production",     "url": "https://career.mediawan.com/fr/annonces"},
     {"name": "Gaumont",              "cat": "Cinéma & production",     "url": "https://www.gaumont.com/fr/valeurs-engagement-rse-rh"},
     {"name": "UGC",                  "cat": "Cinéma & production",     "url": "https://www.ugc.fr/metiers-recrutement.html"},
-    {"name": "SND Films",            "cat": "Cinéma & production",     "url": "https://www.welcometothejungle.com/fr/companies/snd/jobs"},
-    {"name": "mk2",                  "cat": "Cinéma & production",     "url": "https://www.welcometothejungle.com/fr/companies/mk2/jobs"},
+    {"name": "SND Films",            "cat": "Cinéma & production",     "url": "https://www.recrutement.groupem6.fr/offre-de-emploi/liste-offres.aspx"},
+    {"name": "mk2",                  "cat": "Cinéma & production",     "url": "https://mk2pro.com/nous-rejoindre/"},
     # ── Culture & institutions ───────────────────────────────────
-    {"name": "Gaîté Lyrique",        "cat": "Culture & institutions",  "url": "https://gaite-lyrique.net/la-gaite/recrutement"},
-    {"name": "La Villette",          "cat": "Culture & institutions",  "url": "https://lavillette.com/la-villette/recrutement"},
-    {"name": "Philharmonie de Paris","cat": "Culture & institutions",  "url": "https://philharmoniedeparis.fr/fr/la-philharmonie/recrutement"},
-    {"name": "Lafayette Anticipations","cat": "Culture & institutions","url": "https://www.lafayetteanticipations.com/fr/fondation"},
+    {"name": "Gaîté Lyrique",        "cat": "Culture & institutions",  "url": "https://www.gaite-lyrique.net/rejoindre-l-equipe/#toutes-les-offres"},
+    {"name": "La Villette",          "cat": "Culture & institutions",  "url": "https://lavillette.taleez.com/"},
+    {"name": "Philharmonie de Paris","cat": "Culture & institutions",  "url": "https://philharmoniedeparis.fr/fr/informations-pratiques/recrutement"},
+    {"name": "Lafayette Anticipations","cat": "Culture & institutions","url": "https://www.lafayetteanticipations.com/fr/recrutement"},
     # ── Édition ──────────────────────────────────────────────────
-    {"name": "Flammarion",           "cat": "Édition",                 "url": "https://www.gallimard.fr/Gallimard/Groupe-Gallimard/Emplois-et-stages"},
-    {"name": "Actes Sud",            "cat": "Édition",                 "url": "https://www.actes-sud.fr/recrutement"},
-    {"name": "Gallimard",            "cat": "Édition",                 "url": "https://www.gallimard.fr/Gallimard/Groupe-Gallimard/Emplois-et-stages"},
-    {"name": "Combat",               "cat": "Édition",                 "url": "https://www.welcometothejungle.com/fr/companies/combat/jobs"},
+    {"name": "Flammarion",           "cat": "Édition",                 "url": "https://madrigall.nous-recrutons.fr/offres-emploi/"},
     # ── Adtech / médiatech ───────────────────────────────────────
     {"name": "Equativ",              "cat": "Adtech / médiatech",      "url": "https://equativ.com/careers/"},
-    {"name": "Teads",                "cat": "Adtech / médiatech",      "url": "https://www.teads.com/careers/"},
+    {"name": "Teads",                "cat": "Adtech / médiatech",      "url": "https://www.teads.com/fr/teads-careers/job-openings/?_job-locations=paris"},
     {"name": "Ogury",                "cat": "Adtech / médiatech",      "url": "https://ogury.com/careers/"},
-    {"name": "Poool",                "cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/poool/jobs"},
-    {"name": "Welcome to the Jungle","cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/welcome-to-the-jungle/jobs"},
-    {"name": "Scoop.it",             "cat": "Adtech / médiatech",      "url": "https://www.welcometothejungle.com/fr/companies/scoopit/jobs"},
+    {"name": "Scoop.it",             "cat": "Adtech / médiatech",      "url": "https://www.scoop-it.fr/recrutement/"},
     {"name": "Twipe",                "cat": "Adtech / médiatech",      "url": "https://www.twipemobile.com/careers/"},
 ]
 
@@ -103,36 +100,26 @@ def save_cache(cache):
     with open(CACHE_FILE, "w") as f:
         json.dump(cache, f, indent=2)
 
-# ── Extraction texte stable ───────────────────────────────────────
+# ── Hash stable (supprime le bruit dynamique) ────────────────────
 
-def extract_stable_text(html):
+def stable_hash(html):
     """
-    Extrait uniquement le texte visible de la page en supprimant :
-    - tous les scripts et styles
-    - les tokens, timestamps, IDs aléatoires
-    - les espaces superflus
-    Le résultat est stable d'une visite à l'autre même si la page
-    contient des éléments dynamiques.
+    Extrait uniquement le texte visible en supprimant :
+    - scripts, styles, balises techniques
+    - tokens hexadécimaux, UUIDs, timestamps
+    Résultat stable d'une visite à l'autre malgré les éléments dynamiques.
     """
     soup = BeautifulSoup(html, "html.parser")
-
-    # Supprimer scripts, styles, métadonnées
     for tag in soup(["script", "style", "meta", "link", "noscript", "iframe", "svg"]):
         tag.decompose()
-
-    # Extraire le texte brut
     text = soup.get_text(separator=" ")
-
-    # Nettoyer : supprimer les tokens hexadécimaux et UUIDs (très fréquents dans les SPA)
+    # Supprimer tokens hex et UUIDs
     text = re.sub(r'\b[a-f0-9]{8,}\b', '', text)
     text = re.sub(r'\b[A-Za-z0-9]{20,}\b', '', text)
-
-    # Supprimer les nombres isolés (timestamps, compteurs)
+    # Supprimer grands nombres (timestamps)
     text = re.sub(r'\b\d{5,}\b', '', text)
-
-    # Normaliser les espaces
+    # Normaliser espaces
     text = re.sub(r'\s+', ' ', text).strip()
-
     return hashlib.md5(text.encode("utf-8", errors="ignore")).hexdigest()
 
 # ── Fetch ────────────────────────────────────────────────────────
@@ -317,7 +304,7 @@ def main():
             new_cache[name] = cache.get(name, {})
             continue
 
-        current_hash  = extract_stable_text(html)
+        current_hash  = stable_hash(html)
         previous_hash = cache.get(name, {}).get("hash")
         new_cache[name] = {"hash": current_hash}
 
