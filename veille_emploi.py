@@ -78,6 +78,13 @@ COMPANIES = [
     {"name": "Ogury",                "cat": "Adtech / médiatech",      "url": "https://ogury.com/careers/"},
     {"name": "Scoop.it",             "cat": "Adtech / médiatech",      "url": "https://www.scoop-it.fr/recrutement/"},
     {"name": "Twipe",                "cat": "Adtech / médiatech",      "url": "https://www.twipemobile.com/careers/"},
+    # ── Musique & événementiel ────────────────────────────────────────
+{"name": "Sony Music France",        "cat": "Musique & événementiel", "url": "https://www.sonymusic.fr/nous-rejoindre/"},
+{"name": "Warner Music France",      "cat": "Musique & événementiel", "url": "https://www.welcometothejungle.com/fr/companies/warner-music-france/jobs"},
+{"name": "Warner Bros. Discovery",   "cat": "Musique & événementiel", "url": "https://careers.wbd.com/fr/fr/search-results?keywords=&location=France"},
+{"name": "Snap / Snapchat",          "cat": "Musique & événementiel", "url": "https://careers.snap.com/jobs?location=Paris&lang=fr-FR"},
+{"name": "Shotgun",                  "cat": "Musique & événementiel", "url": "https://shotgun.teamtailor.com/jobs"},
+{"name": "DICE",                     "cat": "Musique & événementiel", "url": "https://dice.fm/jobs"},
 ]
 
 HEADERS = {
